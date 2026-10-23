@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Complete the Puzzle – Invitation</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet">
 <style>
 :root{
   --orange:#E8812B; --orange-d:#c9661a; --blue:#12A5E0; --ink:#1d1d1f; --paper:#fff;
@@ -86,67 +86,44 @@ body{
   transition:background .6s, visibility 0s .6s;
 }
 .overlay.show{background:rgba(3,12,24,.88);backdrop-filter:blur(6px);visibility:visible;transition:background .6s}
-.letter{
-  width:min(560px,100%);background:var(--paper);border-radius:14px;margin:auto;position:relative;
-  box-shadow:0 0 0 4px var(--orange),0 30px 80px rgba(0,0,0,.6);padding:42px clamp(20px,5vw,48px) 0;text-align:center;overflow:hidden;
-  transform:translateY(70vh) scale(.4) rotate(-3deg);opacity:0;
-  transition:transform .9s cubic-bezier(.2,.9,.25,1),opacity .5s;
-}
 .overlay.show .letter{transform:none;opacity:1}
 .reveal{opacity:0;transform:translateY(18px)}
 .overlay.show .reveal{animation:rise .7s ease forwards;animation-delay:calc(.55s + var(--i)*.14s)}
 @keyframes rise{to{opacity:1;transform:none}}
-
-.logos{display:flex;align-items:center;justify-content:center;gap:clamp(14px,5vw,38px);flex-wrap:wrap}
-.logo-coop{height:64px;width:auto}
-.logo-alhuda{height:56px;width:auto}
-.rule{height:3px;background:var(--orange);margin:14px 0 8px}
-.tag{font-style:italic;font-weight:700;font-size:1rem}
-h1{color:var(--orange);font-weight:900;text-transform:uppercase;line-height:1.02;font-size:clamp(2rem,8.4vw,3.2rem);margin:28px 0 18px;
-  letter-spacing:-.01em;text-shadow:3px 3px 0 rgba(18,165,224,.25)}
-.bar{width:120px;height:6px;border-radius:3px;background:var(--blue);margin:0 auto 22px}
-p.body{font-size:1.02rem;font-weight:600;line-height:1.6;margin-bottom:16px}
-.blue{color:#fff;background:var(--blue);font-weight:800;font-size:1.15rem;margin:24px calc(-1*clamp(20px,5vw,48px)) 8px;padding:14px 20px}
-
-/* puzzle reveal */
-.puzzle{margin:16px auto 6px;max-width:380px;text-align:left}
-.slot{position:relative;border:4px dashed var(--orange);border-radius:12px;min-height:130px;padding:18px 18px 18px 22px;
-  background:repeating-linear-gradient(45deg,#fff7ef,#fff7ef 10px,#fff 10px,#fff 20px);transition:all .6s}
-.details{opacity:0;filter:blur(8px);transition:all .8s .35s;font-size:1.08rem;font-weight:700;line-height:1.9}
-.details b{color:var(--orange);display:inline-block;width:78px;font-weight:900}
-.slot.done{border-style:solid;border-color:transparent;background:#fff;box-shadow:inset 0 0 0 2px #fbe3cc}
-.slot.done .details{opacity:1;filter:none}
-.slot .qm{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:.8rem;
-  letter-spacing:.14em;text-transform:uppercase;color:var(--orange-d);font-weight:600;padding-left:70px;transition:opacity .3s}
-.slot.done .qm{opacity:0}
-.piece{
-  position:absolute;left:14px;top:50%;width:56px;height:56px;margin-top:-28px;cursor:grab;z-index:3;touch-action:none;
-  filter:drop-shadow(0 4px 6px rgba(0,0,0,.3));transition:transform .5s cubic-bezier(.3,1.6,.5,1),opacity .4s;
-  animation:wiggle 1.6s ease-in-out infinite;
+.letter{
+  --cream:#F8F4EB; --navy:#1b2038; --serif:'Playfair Display',Georgia,serif;
+  width:min(560px,100%);min-height:min(840px,160vw);background:var(--cream);margin:auto;position:relative;
+  border-radius:10px;
+  box-shadow:0 30px 80px rgba(0,0,0,.6);padding:calc(7% + 20px) calc(7% + 8px) 130px;text-align:center;overflow:hidden;
+  display:flex;flex-direction:column;align-items:center;color:var(--navy);
+  transform:translateY(70vh) scale(.4) rotate(-3deg);opacity:0;
+  transition:transform .9s cubic-bezier(.2,.9,.25,1),opacity .5s;
 }
-.piece:active{cursor:grabbing;animation:none}
-.piece.dragging{transition:none;animation:none}
-.piece.snap{animation:none;transform:scale(1.8) !important;opacity:0}
-@keyframes wiggle{0%,100%{rotate:-6deg}50%{rotate:8deg}}
-.piece svg{width:100%;height:100%;pointer-events:none}
-.cta-hint{text-align:center;font-size:.75rem;color:#777;margin-top:8px;transition:opacity .3s}
-.cta-hint.hide{opacity:0}
-.motto{font-style:italic;font-weight:700;font-size:.95rem;margin:20px 0 20px}
-.actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:24px;opacity:0;pointer-events:none;transition:opacity .6s .8s}
-.actions.on{opacity:1;pointer-events:auto}
-.btn{font:inherit;font-weight:700;font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;border:0;border-radius:999px;
-  padding:12px 20px;cursor:pointer;text-decoration:none;display:inline-block;transition:transform .2s,box-shadow .2s}
-.btn:hover{transform:translateY(-2px);box-shadow:0 8px 16px rgba(0,0,0,.15)}
-.btn.primary{background:var(--orange);color:#fff}
-.btn.ghost{background:#e9f6fd;color:#0b7fb0}
-.zig{height:22px;margin:0 calc(-1*clamp(20px,5vw,48px));
-  background:linear-gradient(135deg,var(--orange) 25%,transparent 25%) -11px 0,
-             linear-gradient(225deg,var(--orange) 25%,transparent 25%) -11px 0,
-             linear-gradient(315deg,var(--orange) 25%,transparent 25%),
-             linear-gradient(45deg,var(--orange) 25%,transparent 25%);
-  background-size:22px 22px;background-color:#fff;border-top:2px solid var(--orange)}
-.close{position:absolute;top:10px;right:12px;width:34px;height:34px;border-radius:50%;border:0;background:#fbe3cc;color:var(--orange-d);
-  font-size:1.2rem;cursor:pointer;z-index:5}
+.letter::before{content:"";position:absolute;inset:20px;border:2px solid var(--orange);border-radius:min(260px,46vw) min(260px,46vw) 0 0;pointer-events:none}
+.logos{display:flex;align-items:center;justify-content:center;gap:5%;width:100%;margin-top:6%}
+.logos .div{width:1px;height:46px;background:#555}
+.logo-coop{height:clamp(42px,9vw,56px);width:auto}
+.logo-alhuda{height:clamp(46px,10vw,60px);width:auto}
+.rule{height:2px;background:var(--orange);width:76%}
+.rule.sm{width:48%;margin:4% 0;background:var(--orange)}
+.tag{font-style:italic;font-weight:400;font-size:clamp(.7rem,2.2vw,.82rem);margin:2.5% 0 0}
+.inv{font-family:var(--serif);font-weight:800;letter-spacing:.2em;font-size:clamp(.85rem,3vw,1.2rem);margin-top:7%}
+h1 span{display:block;width:fit-content;margin:0 auto;color:#E08330;
+  background:linear-gradient(90deg,#D9781F 0%,#EC9546 14%,#DD7C25 30%,#EF9B4C 48%,#DB7B24 64%,#EC9546 82%,#D9781F 100%),linear-gradient(180deg,#D77A27,#E88E3A 45%,#D97B25);
+  background-blend-mode:soft-light;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 0 .6px rgba(190,95,20,.7))}
+h1{font-family:var(--serif);color:var(--orange);font-weight:900;text-transform:uppercase;line-height:.92;
+  font-size:clamp(2.4rem,10.8vw,4.1rem);margin:2% 0 3%;letter-spacing:-.01em}
+.body{font-size:clamp(.78rem,2.6vw,1rem);font-weight:400;line-height:1.5;margin:3% 0 0;max-width:86%}
+.q{font-family:var(--serif);color:var(--orange);font-weight:700;font-size:clamp(1.2rem,4.4vw,1.7rem);margin-top:5%}
+.q + .body{margin-top:1%;max-width:none;white-space:nowrap;font-size:clamp(.7rem,2.5vw,.97rem)}
+.details{font-size:clamp(.56rem,1.95vw,.82rem);font-weight:400;white-space:nowrap;margin:0}
+.details span{color:var(--orange);margin:0 .6em;font-weight:600}
+.sign{width:clamp(110px,23vw,150px);height:auto;margin-top:5%}
+.corner{position:absolute;bottom:20px;width:clamp(55px,13vw,80px);height:auto}
+.corner.l{left:20px}.corner.r{right:20px}
+.close{position:absolute;top:6px;right:6px;width:30px;height:30px;border-radius:50%;border:0;background:#fbe3cc;color:var(--orange-d);
+  font-size:1.1rem;cursor:pointer;z-index:5}
 .close:hover{background:var(--orange);color:#fff}
 canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition-duration:.01s!important}}
@@ -176,40 +153,33 @@ canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
   <article class="letter">
     <button class="close" id="close" aria-label="Close letter">×</button>
 
-    <div class="reveal" style="--i:0">
+    <div class="reveal" style="--i:0;width:100%">
       <div class="logos">
         <img class="logo-coop" src="img/coop-logo.svg" alt="Coop Bank of Oromia">
+        <span class="div"></span>
         <img class="logo-alhuda" src="img/alhuda-only.png" alt="Alhuda">
       </div>
-      <div class="rule"></div>
+      <div class="rule" style="margin:3% auto 0"></div>
       <div class="tag">Your Genuine Partner!</div>
     </div>
 
-    <h1 class="reveal" style="--i:1">Invitation to<br>Complete the Puzzle!!!</h1>
-    <div class="bar reveal" style="--i:2"></div>
+    <div class="inv reveal" style="--i:1">YOU ARE INVITED TO</div>
+    <h1 class="reveal" style="--i:2"><span>Complete</span><span>The Puzzle!</span></h1>
+    <div class="rule sm reveal" style="--i:3"></div>
 
-    <p class="body reveal" style="--i:3">A piece is missing. Without it, the picture is incomplete.<br>The balance is lost.<br>Let’s discover the missing piece together.</p>
-    <p class="body reveal" style="--i:4">On Friday, October 30, something new is about to fall into place. Join us as Cooperative Bank of Oromia unveils a new connection designed to bring greater balance to the financial landscape.</p>
-    <p class="body reveal" style="--i:5">Come discover what’s been missing. Be part of the moment that completes the picture.</p>
+    <p class="body reveal" style="--i:4">A piece is missing. The picture is incomplete.<br>The balance is lost.</p>
+    <p class="body reveal" style="--i:5">Join Cooperative Bank of Oromia as we unveil<br>a new connection designed to bring greater<br>balance to the financial landscape.</p>
 
-    <div class="blue reveal" style="--i:6">Come and experience true financial balance with us</div>
+    <div class="q reveal" style="--i:6">What’s missing?</div>
+    <p class="body reveal" style="--i:6">Come discover the piece that completes the picture.</p>
 
-    <div class="puzzle reveal" style="--i:7">
-      <div class="slot done">
-        <div class="details">
-          <div><b>Date:</b> Friday, October 30, 2026</div>
-          <div><b>Time:</b> 3:00 PM</div>
-          <div><b>Venue:</b> Lalibela Ballroom, Sheraton Addis</div>
-        </div>
-      </div>
-    </div>
+    <div class="rule sm reveal" style="--i:7"></div>
+    <p class="details reveal" style="--i:7">Friday, October 30, 2026<span>|</span>3:00 PM<span>|</span>Lalibela Ballroom, Sheraton Addis</p>
 
-    <div class="motto reveal" style="--i:8">A puzzle piece to complete the financial balance.</div>
-    <div class="actions on" id="actions">
-      <a class="btn primary" id="cal" href="#" download="puzzle-invitation.ics">Add to calendar</a>
-      <a class="btn ghost" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Sheraton+Addis">Get directions</a>
-    </div>
-    <div class="zig"></div>
+    <img class="sign reveal" style="--i:8" src="img/signature.png" alt="Sincerely, Deribie Asfaw, CEO">
+
+    <img class="corner l" src="img/corner-left.png" alt="">
+    <img class="corner r" src="img/corner-right.png" alt="">
   </article>
 </div>
 
@@ -218,8 +188,7 @@ canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
 <script>
 (function(){
   var env=document.getElementById('env'), overlay=document.getElementById('overlay'),
-      hint=document.getElementById('hint'), close=document.getElementById('close'),
-      actions=document.getElementById('actions');
+      hint=document.getElementById('hint'), close=document.getElementById('close');
 
   function openEnv(){
     if(env.classList.contains('open')) return;
@@ -234,17 +203,6 @@ canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
   close.addEventListener('click',closeEnv);
   document.addEventListener('keydown',function(e){ if(e.key==='Escape' && overlay.classList.contains('show')) closeEnv(); });
 
-  /* ----- calendar file ----- */
-  document.getElementById('cal').addEventListener('click',function(){
-    var ics=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Puzzle Invitation//EN','BEGIN:VEVENT',
-      'UID:puzzle-2026-10-30@coopbank','DTSTAMP:20261001T000000Z',
-      'DTSTART:20261030T150000','DTEND:20261030T180000',
-      'SUMMARY:Complete the Puzzle – Cooperative Bank of Oromia',
-      'LOCATION:Lalibela Ballroom\\, Sheraton Addis',
-      'DESCRIPTION:A puzzle piece to complete the financial balance.',
-      'END:VEVENT','END:VCALENDAR'].join('\r\n');
-    this.href='data:text/calendar;charset=utf-8,'+encodeURIComponent(ics);
-  });
 
   /* ----- confetti ----- */
   var cv=document.getElementById('confetti'), cx=cv.getContext('2d'), parts=[], raf;
