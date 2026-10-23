@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Complete the Puzzle – Invitation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --orange:#E8812B; --orange-d:#c9661a; --blue:#12A5E0; --ink:#1d1d1f; --paper:#fff;
+  --bg1:#fff7ef; --bg2:#e9f6fd;
+  --env:#F58A1F; --env-back:#C9610C; --env-flap:#FF9D3A;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:'Montserrat',system-ui,-apple-system,Segoe UI,sans-serif;color:var(--ink);
+  background:radial-gradient(900px 600px at 20% 15%,rgba(18,165,224,.45),transparent 60%),
+             radial-gradient(900px 600px at 85% 90%,rgba(232,129,43,.45),transparent 60%),#06182b;
+  overflow:hidden;
+}
+.star{position:fixed;width:280px;height:280px;opacity:.9;pointer-events:none;color:var(--orange);stroke-width:1.4}
+.star.tl{top:-70px;left:-70px;animation:spin 60s linear infinite}
+.star.br{bottom:-70px;right:-70px;animation:spin 60s linear infinite reverse}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ---------- stage ---------- */
+.stage{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2.2rem;padding:16px}
+.sub-top{margin-top:-1.4rem;font-style:italic;font-weight:500;font-size:clamp(.95rem,3.4vw,1.15rem);color:#9fdcf5;text-align:center;letter-spacing:.03em}
+.hint{font-weight:800;letter-spacing:.18em;text-transform:uppercase;font-size:.95rem;color:#fff;
+  animation:pulse 2s ease-in-out infinite;transition:opacity .4s}
+@keyframes pulse{50%{opacity:.4}}
+.title-top{font-size:clamp(1.6rem,6vw,2.6rem);letter-spacing:.2em;text-transform:uppercase;color:#fff;font-weight:900;
+  text-shadow:0 0 30px rgba(18,165,224,.8)}
+
+.envelope{
+  --w:min(360px,84vw); --h:calc(var(--w)*.66);
+  position:relative;width:var(--w);height:var(--h);cursor:pointer;perspective:1000px;
+  filter:drop-shadow(0 0 40px rgba(245,138,31,.55)) drop-shadow(0 25px 30px rgba(0,0,0,.5));
+  animation:float 4s ease-in-out infinite;transition:transform .8s ease, opacity .6s ease;
+  background:none;border:0;outline:none;
+}
+.envelope:focus-visible{outline:3px solid var(--blue);outline-offset:10px;border-radius:8px}
+@keyframes float{50%{transform:translateY(-10px)}}
+.envelope .back{position:absolute;inset:0;background:var(--env-back);border-radius:8px}
+.envelope .paper{
+  position:absolute;left:6%;right:6%;top:4%;height:92%;background:#fff;border-radius:6px;
+  padding:14px;transition:transform .8s cubic-bezier(.3,.8,.3,1) .45s;z-index:2;
+  box-shadow:0 2px 6px rgba(0,0,0,.12);overflow:hidden;
+}
+.paper i{display:block;height:6px;border-radius:3px;background:#f1e3d3;margin-bottom:9px}
+.paper i:first-child{background:var(--orange);width:60%;height:9px}
+.paper i:nth-child(3){width:80%}.paper i:nth-child(5){width:70%;background:#cfe9f6}
+.envelope .front{position:absolute;inset:0;z-index:3;pointer-events:none}
+.front::before,.front::after{content:"";position:absolute;inset:0;border-radius:8px}
+.front::before{background:var(--env);clip-path:polygon(0 0,50% 55%,100% 0,100% 100%,0 100%)}
+.front::after{background:linear-gradient(135deg,rgba(255,255,255,.35),transparent 40%,rgba(0,0,0,.08));
+  clip-path:polygon(0 0,50% 55%,100% 0,100% 100%,0 100%)}
+.envelope .flap{
+  position:absolute;left:0;top:0;width:100%;height:58%;z-index:4;transform-origin:top center;
+  transition:transform .7s ease, z-index 0s .35s;
+}
+.flap::before{content:"";position:absolute;inset:0;background:var(--env-flap);
+  clip-path:polygon(0 0,100% 0,50% 100%);border-radius:8px 8px 0 0;
+  filter:drop-shadow(0 4px 3px rgba(0,0,0,.15))}
+.envelope.open .flap{transform:rotateX(180deg);z-index:1}
+.envelope.open .paper{transform:translateY(-62%)}
+.envelope.open{animation:none}
+.envelope.gone{transform:translateY(120px) scale(.9);opacity:0;pointer-events:none}
+.envelope.open .seal{transform:translate(-50%,-50%) scale(0) rotate(90deg);opacity:0}
+
+/* puzzle-piece wax seal */
+.seal{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:6;width:64px;height:64px;
+  transition:transform .4s ease,opacity .3s;
+  filter:drop-shadow(0 4px 6px rgba(0,0,0,.35));
+}
+.envelope:hover .seal{transform:translate(-50%,-50%) scale(1.1) rotate(-6deg)}
+.seal svg{width:100%;height:100%;display:block}
+
+/* ---------- letter overlay ---------- */
+.overlay{
+  position:fixed;inset:0;display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;
+  background:rgba(255,248,240,.0);visibility:hidden;z-index:20;padding:24px 14px 60px;
+  transition:background .6s, visibility 0s .6s;
+}
+.overlay.show{background:rgba(3,12,24,.88);backdrop-filter:blur(6px);visibility:visible;transition:background .6s}
+.letter{
+  width:min(560px,100%);background:var(--paper);border-radius:14px;margin:auto;position:relative;
+  box-shadow:0 0 0 4px var(--orange),0 30px 80px rgba(0,0,0,.6);padding:42px clamp(20px,5vw,48px) 0;text-align:center;overflow:hidden;
+  transform:translateY(70vh) scale(.4) rotate(-3deg);opacity:0;
+  transition:transform .9s cubic-bezier(.2,.9,.25,1),opacity .5s;
+}
+.overlay.show .letter{transform:none;opacity:1}
+.reveal{opacity:0;transform:translateY(18px)}
+.overlay.show .reveal{animation:rise .7s ease forwards;animation-delay:calc(.55s + var(--i)*.14s)}
+@keyframes rise{to{opacity:1;transform:none}}
+
+.logos{display:flex;align-items:center;justify-content:center;gap:clamp(14px,5vw,38px);flex-wrap:wrap}
+.logo-coop{height:64px;width:auto}
+.logo-alhuda{height:56px;width:auto}
+.rule{height:3px;background:var(--orange);margin:14px 0 8px}
+.tag{font-style:italic;font-weight:700;font-size:1rem}
+h1{color:var(--orange);font-weight:900;text-transform:uppercase;line-height:1.02;font-size:clamp(2rem,8.4vw,3.2rem);margin:28px 0 18px;
+  letter-spacing:-.01em;text-shadow:3px 3px 0 rgba(18,165,224,.25)}
+.bar{width:120px;height:6px;border-radius:3px;background:var(--blue);margin:0 auto 22px}
+p.body{font-size:1.02rem;font-weight:600;line-height:1.6;margin-bottom:16px}
+.blue{color:#fff;background:var(--blue);font-weight:800;font-size:1.15rem;margin:24px calc(-1*clamp(20px,5vw,48px)) 8px;padding:14px 20px}
+
+/* puzzle reveal */
+.puzzle{margin:16px auto 6px;max-width:380px;text-align:left}
+.slot{position:relative;border:4px dashed var(--orange);border-radius:12px;min-height:130px;padding:18px 18px 18px 22px;
+  background:repeating-linear-gradient(45deg,#fff7ef,#fff7ef 10px,#fff 10px,#fff 20px);transition:all .6s}
+.details{opacity:0;filter:blur(8px);transition:all .8s .35s;font-size:1.08rem;font-weight:700;line-height:1.9}
+.details b{color:var(--orange);display:inline-block;width:78px;font-weight:900}
+.slot.done{border-style:solid;border-color:transparent;background:#fff;box-shadow:inset 0 0 0 2px #fbe3cc}
+.slot.done .details{opacity:1;filter:none}
+.slot .qm{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:.8rem;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--orange-d);font-weight:600;padding-left:70px;transition:opacity .3s}
+.slot.done .qm{opacity:0}
+.piece{
+  position:absolute;left:14px;top:50%;width:56px;height:56px;margin-top:-28px;cursor:grab;z-index:3;touch-action:none;
+  filter:drop-shadow(0 4px 6px rgba(0,0,0,.3));transition:transform .5s cubic-bezier(.3,1.6,.5,1),opacity .4s;
+  animation:wiggle 1.6s ease-in-out infinite;
+}
+.piece:active{cursor:grabbing;animation:none}
+.piece.dragging{transition:none;animation:none}
+.piece.snap{animation:none;transform:scale(1.8) !important;opacity:0}
+@keyframes wiggle{0%,100%{rotate:-6deg}50%{rotate:8deg}}
+.piece svg{width:100%;height:100%;pointer-events:none}
+.cta-hint{text-align:center;font-size:.75rem;color:#777;margin-top:8px;transition:opacity .3s}
+.cta-hint.hide{opacity:0}
+.motto{font-style:italic;font-weight:700;font-size:.95rem;margin:20px 0 20px}
+.actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:24px;opacity:0;pointer-events:none;transition:opacity .6s .8s}
+.actions.on{opacity:1;pointer-events:auto}
+.btn{font:inherit;font-weight:700;font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;border:0;border-radius:999px;
+  padding:12px 20px;cursor:pointer;text-decoration:none;display:inline-block;transition:transform .2s,box-shadow .2s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 16px rgba(0,0,0,.15)}
+.btn.primary{background:var(--orange);color:#fff}
+.btn.ghost{background:#e9f6fd;color:#0b7fb0}
+.zig{height:22px;margin:0 calc(-1*clamp(20px,5vw,48px));
+  background:linear-gradient(135deg,var(--orange) 25%,transparent 25%) -11px 0,
+             linear-gradient(225deg,var(--orange) 25%,transparent 25%) -11px 0,
+             linear-gradient(315deg,var(--orange) 25%,transparent 25%),
+             linear-gradient(45deg,var(--orange) 25%,transparent 25%);
+  background-size:22px 22px;background-color:#fff;border-top:2px solid var(--orange)}
+.close{position:absolute;top:10px;right:12px;width:34px;height:34px;border-radius:50%;border:0;background:#fbe3cc;color:var(--orange-d);
+  font-size:1.2rem;cursor:pointer;z-index:5}
+.close:hover{background:var(--orange);color:#fff}
+canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition-duration:.01s!important}}
+</style>
+</head>
+<body>
+<svg class="star tl" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width=".8"><g id="st"><polygon points="50,2 61,25 85,15 75,39 98,50 75,61 85,85 61,75 50,98 39,75 15,85 25,61 2,50 25,39 15,15 39,25"/><polygon points="50,18 58,34 74,26 66,42 82,50 66,58 74,74 58,66 50,82 42,66 26,74 34,58 18,50 34,42 26,26 42,34"/></g></svg>
+<svg class="star br" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width=".8"><use href="#st"/></svg>
+
+<main class="stage" id="stage">
+  <div class="title-top">You are invited</div>
+  <p class="sub-top">One missing piece. One unforgettable moment.</p>
+  <button class="envelope" id="env" aria-label="Open the invitation envelope">
+    <div class="back"></div>
+    <div class="paper"><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="front"></div>
+    <div class="flap"></div>
+    <div class="seal">
+      <svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#c9661a"/><circle cx="32" cy="32" r="25" fill="#E8812B"/>
+        <path id="pz" fill="#fff" d="M20 22h8a4 4 0 1 1 8 0h8v8a4 4 0 1 1 0 8v8H20v-8a4 4 0 1 0 0-8z"/></svg>
+    </div>
+  </button>
+  <div class="hint" id="hint">Tap the seal to open</div>
+</main>
+
+<div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-label="Invitation letter">
+  <article class="letter">
+    <button class="close" id="close" aria-label="Close letter">×</button>
+
+    <div class="reveal" style="--i:0">
+      <div class="logos">
+        <img class="logo-coop" src="img/coop-logo.svg" alt="Coop Bank of Oromia">
+        <img class="logo-alhuda" src="img/alhuda-only.png" alt="Alhuda">
+      </div>
+      <div class="rule"></div>
+      <div class="tag">Your Genuine Partner!</div>
+    </div>
+
+    <h1 class="reveal" style="--i:1">Invitation to<br>Complete the Puzzle!!!</h1>
+    <div class="bar reveal" style="--i:2"></div>
+
+    <p class="body reveal" style="--i:3">A piece is missing. Without it, the picture is incomplete.<br>The balance is lost.<br>Let’s discover the missing piece together.</p>
+    <p class="body reveal" style="--i:4">On Friday, October 30, something new is about to fall into place. Join us as Cooperative Bank of Oromia unveils a new connection designed to bring greater balance to the financial landscape.</p>
+    <p class="body reveal" style="--i:5">Come discover what’s been missing. Be part of the moment that completes the picture.</p>
+
+    <div class="blue reveal" style="--i:6">Come and experience true financial balance with us</div>
+
+    <div class="puzzle reveal" style="--i:7">
+      <div class="slot done">
+        <div class="details">
+          <div><b>Date:</b> Friday, October 30, 2026</div>
+          <div><b>Time:</b> 3:00 PM</div>
+          <div><b>Venue:</b> Lalibela Ballroom, Sheraton Addis</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="motto reveal" style="--i:8">A puzzle piece to complete the financial balance.</div>
+    <div class="actions on" id="actions">
+      <a class="btn primary" id="cal" href="#" download="puzzle-invitation.ics">Add to calendar</a>
+      <a class="btn ghost" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Sheraton+Addis">Get directions</a>
+    </div>
+    <div class="zig"></div>
+  </article>
+</div>
+
+<canvas id="confetti"></canvas>
+
+<script>
+(function(){
+  var env=document.getElementById('env'), overlay=document.getElementById('overlay'),
+      hint=document.getElementById('hint'), close=document.getElementById('close'),
+      actions=document.getElementById('actions');
+
+  function openEnv(){
+    if(env.classList.contains('open')) return;
+    env.classList.add('open'); hint.style.opacity=0;
+    setTimeout(function(){ env.classList.add('gone'); overlay.classList.add('show'); overlay.scrollTop=0; close.focus({preventScroll:true}); burst(); },1500);
+  }
+  function closeEnv(){
+    overlay.classList.remove('show'); env.classList.remove('gone');
+    setTimeout(function(){ env.classList.remove('open'); hint.style.opacity=1; },700);
+  }
+  env.addEventListener('click',openEnv);
+  close.addEventListener('click',closeEnv);
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape' && overlay.classList.contains('show')) closeEnv(); });
+
+  /* ----- calendar file ----- */
+  document.getElementById('cal').addEventListener('click',function(){
+    var ics=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Puzzle Invitation//EN','BEGIN:VEVENT',
+      'UID:puzzle-2026-10-30@coopbank','DTSTAMP:20261001T000000Z',
+      'DTSTART:20261030T150000','DTEND:20261030T180000',
+      'SUMMARY:Complete the Puzzle – Cooperative Bank of Oromia',
+      'LOCATION:Lalibela Ballroom\\, Sheraton Addis',
+      'DESCRIPTION:A puzzle piece to complete the financial balance.',
+      'END:VEVENT','END:VCALENDAR'].join('\r\n');
+    this.href='data:text/calendar;charset=utf-8,'+encodeURIComponent(ics);
+  });
+
+  /* ----- confetti ----- */
+  var cv=document.getElementById('confetti'), cx=cv.getContext('2d'), parts=[], raf;
+  function size(){ cv.width=innerWidth; cv.height=innerHeight; }
+  size(); addEventListener('resize',size);
+  function burst(){
+    if(matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+    var colors=['#E8812B','#12A5E0','#f7c48d','#ffffff','#0b7fb0'];
+    var ox=innerWidth/2, oy=innerHeight*0.35;
+    for(var i=0;i<110;i++){
+      var a=Math.random()*Math.PI*2, s=4+Math.random()*9;
+      parts.push({x:ox,y:oy,vx:Math.cos(a)*s,vy:Math.sin(a)*s-5,w:6+Math.random()*6,h:4+Math.random()*5,
+        c:colors[i%colors.length],rot:Math.random()*6,vr:(Math.random()-.5)*.4,life:120+Math.random()*60});
+    }
+    cancelAnimationFrame(raf); tick();
+  }
+  function tick(){
+    cx.clearRect(0,0,cv.width,cv.height);
+    parts=parts.filter(function(p){return p.life>0});
+    parts.forEach(function(p){
+      p.vy+=.28; p.vx*=.99; p.x+=p.vx; p.y+=p.vy; p.rot+=p.vr; p.life--;
+      cx.save(); cx.translate(p.x,p.y); cx.rotate(p.rot); cx.globalAlpha=Math.min(1,p.life/40);
+      cx.fillStyle=p.c; cx.fillRect(-p.w/2,-p.h/2,p.w,p.h); cx.restore();
+    });
+    if(parts.length) raf=requestAnimationFrame(tick); else cx.clearRect(0,0,cv.width,cv.height);
+  }
+})();
+</script>
+</body>
+</html>
